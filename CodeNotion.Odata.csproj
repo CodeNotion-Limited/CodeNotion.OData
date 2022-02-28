@@ -2,7 +2,13 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <RootNamespace>CodeNotion.Odata</RootNamespace>
+    <Title>CodeNotion.OData</Title>
+    <Authors>CodeNotion Limited</Authors>
+    <Description>Library to include standard OData utilities</Description>
+    <PackageProjectUrl>https://github.com/CodeNotion-Limited/CodeNotion.OData</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/CodeNotion-Limited/CodeNotion.OData</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/CodeNotion-Limited/CodeNotion.OData</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
