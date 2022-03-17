@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -24,35 +25,41 @@ public class ODataService
     {
         var query = ApplyOdata(source, queryOptions);
 
-        var count = default(long?);
-        if (queryOptions.Count != null && bool.TryParse(queryOptions.Count.RawValue, out var shouldCount) && shouldCount)
-        {
-            var countSource = (IQueryable<TEntity>?)queryOptions.Filter?.ApplyTo(source, _settings) ?? source;
-
-            if (countSource is IAsyncEnumerable<TEntity>)
-            {
-                count = await countSource.LongCountAsync(_httpContextAccessor.HttpContext!.RequestAborted);
-            }
-            else
-            {
-                count = countSource.LongCount();
-            }
-        }
-
-        var items = new List<TEntity>();
-        if (queryOptions.Count == null || queryOptions.Top.Value > 0)
-        {
-            if (query is IAsyncEnumerable<TEntity>)
-            {
-                items = await query.ToListAsync(_httpContextAccessor.HttpContext!.RequestAborted);
-            }
-            else
-            {
-                items = query.ToList();
-            }
-        }
+        var count = await GetCount(source, queryOptions);
+        var items = await GetItems(queryOptions, query);
 
         return new ManagedPageResult<TEntity>(items, null, count);
+    }
+
+    private async Task<TEntity[]> GetItems<TEntity>(ODataQueryOptions<TEntity> queryOptions, IQueryable<TEntity> query)
+    {
+        if (queryOptions.Count != null && queryOptions.Top.Value <= 0)
+        {
+            return Array.Empty<TEntity>();
+        }
+        
+        if (query is IAsyncEnumerable<TEntity>)
+        {
+            return await query.ToArrayAsync(_httpContextAccessor.HttpContext!.RequestAborted);
+        }
+        
+        return query.ToArray();
+    }
+
+    private async Task<long?> GetCount<TEntity>(IQueryable<TEntity> source, ODataQueryOptions<TEntity> queryOptions)
+    {
+        if (queryOptions.Count == null || !bool.TryParse(queryOptions.Count.RawValue, out var shouldCount) || !shouldCount)
+        {
+            return default;
+        }
+
+        var countSource = (IQueryable<TEntity>?)queryOptions.Filter?.ApplyTo(source, _settings) ?? source;
+        if (countSource is IAsyncEnumerable<TEntity>)
+        {
+            return await countSource.LongCountAsync(_httpContextAccessor.HttpContext!.RequestAborted);
+        }
+
+        return countSource.LongCount();
     }
 
     private IQueryable<TEntity> ApplyOdata<TEntity>(IQueryable<TEntity> source, ODataQueryOptions<TEntity> queryOptions)
