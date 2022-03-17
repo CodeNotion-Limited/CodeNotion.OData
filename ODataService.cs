@@ -39,14 +39,17 @@ public class ODataService
             }
         }
 
-        List<TEntity> items;
-        if (query is IAsyncEnumerable<TEntity>)
+        var items = new List<TEntity>();
+        if (queryOptions.Count == null || queryOptions.Top.Value > 0)
         {
-            items = await query.ToListAsync(_httpContextAccessor.HttpContext!.RequestAborted);
-        }
-        else
-        {
-            items = query.ToList();
+            if (query is IAsyncEnumerable<TEntity>)
+            {
+                items = await query.ToListAsync(_httpContextAccessor.HttpContext!.RequestAborted);
+            }
+            else
+            {
+                items = query.ToList();
+            }
         }
 
         return new ManagedPageResult<TEntity>(items, null, count);
