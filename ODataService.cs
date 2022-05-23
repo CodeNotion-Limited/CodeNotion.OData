@@ -33,7 +33,7 @@ public class ODataService
 
     private async Task<TEntity[]> GetItems<TEntity>(ODataQueryOptions<TEntity> queryOptions, IQueryable<TEntity> query)
     {
-        if (queryOptions.Count != null && queryOptions.Top.Value <= 0)
+        if (queryOptions.Count != null && queryOptions.Top?.Value <= 0)
         {
             return Array.Empty<TEntity>();
         }
