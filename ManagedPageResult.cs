@@ -10,30 +10,16 @@ public interface IManagedPageResult
     public Uri? NextPageLink { get; set; }
 }
 
-public class ManagedPageResult : IManagedPageResult
+public record ManagedPageResult(IEnumerable Items, Uri? NextPageLink = null, long? TotalCount = null) : IManagedPageResult
 {
-    public IEnumerable Items { get; set; }
-    public long? TotalCount { get; set; }
-    public Uri? NextPageLink { get; set; }
-
-    public ManagedPageResult(IEnumerable items, Uri? nextPageLink = null, long? count = null)
-    {
-        Items = items;
-        TotalCount = count;
-        NextPageLink = nextPageLink;
-    }
+    public IEnumerable Items { get; set; } = Items;
+    public long? TotalCount { get; set; } = TotalCount;
+    public Uri? NextPageLink { get; set; } = NextPageLink;
 }
 
-public class ManagedPageResult<T> : IManagedPageResult
+public record ManagedPageResult<T>(IEnumerable<T> Items, Uri? NextPageLink = null, long? TotalCount = null) : IManagedPageResult
 {
-    public IEnumerable<T> Items { get; set; }
-    public long? TotalCount { get; set; }
-    public Uri? NextPageLink { get; set; }
-
-    public ManagedPageResult(IEnumerable<T> items, Uri? nextPageLink = null, long? count = null)
-    {
-        Items = items;
-        TotalCount = count;
-        NextPageLink = nextPageLink;
-    }
+    public IEnumerable<T> Items { get; set; } = Items;
+    public long? TotalCount { get; set; } = TotalCount;
+    public Uri? NextPageLink { get; set; } = NextPageLink;
 }

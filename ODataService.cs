@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -9,8 +8,6 @@ using CodeNotion.Odata.Resolvers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OData.Edm;
 using Microsoft.OData.UriParser;
 
 namespace CodeNotion.Odata;
@@ -30,13 +27,25 @@ public class ODataService
 
     public async Task<ManagedPageResult<TEntity>> ToPagedResultAsync<TEntity>(IQueryable<TEntity> source, ODataQueryOptions<TEntity> queryOptions)
     {
-        InterceptParser(queryOptions);
         var query = ApplyOdata(source, queryOptions);
 
         var count = await GetCount(source, queryOptions);
         var items = await GetItems(queryOptions, query);
 
         return new ManagedPageResult<TEntity>(items, null, count);
+    }
+
+    public IQueryable<TEntity> ApplyOdata<TEntity>(IQueryable<TEntity> source, ODataQueryOptions<TEntity> queryOptions)
+    {
+        InterceptParser(queryOptions);
+        var query = (IQueryable) source;
+        query = queryOptions.OrderBy?.ApplyTo(query, _settings) ?? query;
+        query = queryOptions.Filter?.ApplyTo(query, _settings) ?? query;
+        query = queryOptions.Apply?.ApplyTo(query, _settings) ?? query;
+        query = queryOptions.SelectExpand?.ApplyTo(query, _settings) ?? query;
+        query = queryOptions.Skip?.ApplyTo(query, _settings) ?? query;
+        query = queryOptions.Top?.ApplyTo(query, _settings) ?? query;
+        return (IQueryable<TEntity>) query;
     }
 
     private async Task<TEntity[]> GetItems<TEntity>(ODataQueryOptions<TEntity> queryOptions, IQueryable<TEntity> query)
@@ -68,18 +77,6 @@ public class ODataService
         }
 
         return countSource.LongCount();
-    }
-
-    private IQueryable<TEntity> ApplyOdata<TEntity>(IQueryable<TEntity> source, ODataQueryOptions<TEntity> queryOptions)
-    {
-        var query = (IQueryable) source;
-        query = queryOptions.OrderBy?.ApplyTo(query, _settings) ?? query;
-        query = queryOptions.Filter?.ApplyTo(query, _settings) ?? query;
-        query = queryOptions.Apply?.ApplyTo(query, _settings) ?? query;
-        query = queryOptions.SelectExpand?.ApplyTo(query, _settings) ?? query;
-        query = queryOptions.Skip?.ApplyTo(query, _settings) ?? query;
-        query = queryOptions.Top?.ApplyTo(query, _settings) ?? query;
-        return (IQueryable<TEntity>) query;
     }
 
     /// <summary>
