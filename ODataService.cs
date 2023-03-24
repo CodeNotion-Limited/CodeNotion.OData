@@ -4,10 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using CodeNotion.Odata.Filtering;
 using CodeNotion.Odata.Resolvers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Query.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OData.UriParser;
 
 namespace CodeNotion.Odata;
@@ -18,6 +21,7 @@ public class ODataService
     private readonly ODataQuerySettings _settings;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private static readonly FieldInfo? ParserField = typeof(ODataQueryOptions).GetField("_queryOptionParser", BindingFlags.NonPublic | BindingFlags.Instance);
+    private static readonly PropertyInfo RequestContainerProperty = typeof(ODataQueryContext).GetProperty("RequestContainer", BindingFlags.Public | BindingFlags.Instance)!;
 
     public ODataService(ODataQuerySettings settings, IHttpContextAccessor httpContextAccessor)
     {
@@ -27,8 +31,8 @@ public class ODataService
 
     public async Task<ManagedPageResult<TEntity>> ToPagedResultAsync<TEntity>(IQueryable<TEntity> source, ODataQueryOptions<TEntity> queryOptions)
     {
-        var query = ApplyOdata(source, queryOptions);
 
+        var query = ApplyOdata(source, queryOptions);
         var count = await GetCount(source, queryOptions);
         var items = await GetItems(queryOptions, query);
 
@@ -38,6 +42,8 @@ public class ODataService
     public IQueryable<TEntity> ApplyOdata<TEntity>(IQueryable<TEntity> source, ODataQueryOptions<TEntity> queryOptions)
     {
         InterceptParser(queryOptions);
+        InterceptFilterBinder(queryOptions);
+
         var query = (IQueryable) source;
         query = queryOptions.OrderBy?.ApplyTo(query, _settings) ?? query;
         query = queryOptions.Filter?.ApplyTo(query, _settings) ?? query;
@@ -45,7 +51,7 @@ public class ODataService
         query = queryOptions.SelectExpand?.ApplyTo(query, _settings) ?? query;
         query = queryOptions.Skip?.ApplyTo(query, _settings) ?? query;
         query = queryOptions.Top?.ApplyTo(query, _settings) ?? query;
-        return (IQueryable<TEntity>) query;
+        return (IQueryable<TEntity>)query;
     }
 
     private async Task<TEntity[]> GetItems<TEntity>(ODataQueryOptions<TEntity> queryOptions, IQueryable<TEntity> query)
@@ -94,5 +100,11 @@ public class ODataService
         {
             EnableCaseInsensitive = true
         };
+    }
+
+    private static void InterceptFilterBinder<TEntity>(ODataQueryOptions<TEntity> queryOptions)
+    {
+        var services = new ServiceCollection().AddSingleton<IFilterBinder>(new FixedFilterBinder());
+        RequestContainerProperty.SetValue(queryOptions.Context, services.BuildServiceProvider());
     }
 }
