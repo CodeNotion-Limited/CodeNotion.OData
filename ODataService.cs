@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using CodeNotion.Odata.Filtering;
 using CodeNotion.Odata.Resolvers;
+using CodeNotion.Odata.Sorting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Query.Expressions;
@@ -31,7 +32,6 @@ public class ODataService
 
     public async Task<ManagedPageResult<TEntity>> ToPagedResultAsync<TEntity>(IQueryable<TEntity> source, ODataQueryOptions<TEntity> queryOptions)
     {
-
         var query = ApplyOdata(source, queryOptions);
         var count = await GetCount(source, queryOptions);
         var items = await GetItems(queryOptions, query);
@@ -41,10 +41,10 @@ public class ODataService
 
     public IQueryable<TEntity> ApplyOdata<TEntity>(IQueryable<TEntity> source, ODataQueryOptions<TEntity> queryOptions)
     {
+        AddInterceptors(queryOptions);
         InterceptParser(queryOptions);
-        InterceptFilterBinder(queryOptions);
 
-        var query = (IQueryable) source;
+        var query = (IQueryable)source;
         query = queryOptions.OrderBy?.ApplyTo(query, _settings) ?? query;
         query = queryOptions.Filter?.ApplyTo(query, _settings) ?? query;
         query = queryOptions.Apply?.ApplyTo(query, _settings) ?? query;
@@ -76,7 +76,7 @@ public class ODataService
             return default;
         }
 
-        var countSource = (IQueryable<TEntity>?) queryOptions.Filter?.ApplyTo(source, _settings) ?? source;
+        var countSource = (IQueryable<TEntity>?)queryOptions.Filter?.ApplyTo(source, _settings) ?? source;
         if (countSource is IAsyncEnumerable<TEntity>)
         {
             return await countSource.LongCountAsync(_httpContextAccessor.HttpContext!.RequestAborted);
@@ -90,7 +90,7 @@ public class ODataService
     /// </summary>
     private static void InterceptParser<TEntity>(ODataQueryOptions<TEntity> queryOptions)
     {
-        var parser = (ODataQueryOptionParser?) ParserField?.GetValue(queryOptions);
+        var parser = (ODataQueryOptionParser?)ParserField?.GetValue(queryOptions);
         if (parser == null)
         {
             throw new InvalidOperationException("Could not get ODataQueryOptionParser from ODataQueryOptions");
@@ -102,9 +102,11 @@ public class ODataService
         };
     }
 
-    private static void InterceptFilterBinder<TEntity>(ODataQueryOptions<TEntity> queryOptions)
+    private static void AddInterceptors<TEntity>(ODataQueryOptions<TEntity> queryOptions)
     {
-        var services = new ServiceCollection().AddSingleton<IFilterBinder>(new FixedFilterBinder());
+        var services = new ServiceCollection()
+            .AddSingleton<IFilterBinder>(new FixedFilterBinder())
+            .AddSingleton<QueryBinder>(new FixedSortingBinder());
         RequestContainerProperty.SetValue(queryOptions.Context, services.BuildServiceProvider());
     }
 }
