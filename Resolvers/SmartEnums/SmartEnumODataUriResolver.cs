@@ -3,7 +3,6 @@ using Microsoft.OData.Edm;
 using Microsoft.OData.UriParser;
 using System;
 using System.Linq;
-using System.Reflection;
 
 namespace CodeNotion.Odata.Resolvers.SmartEnums;
 
@@ -35,51 +34,10 @@ internal class SmartEnumODataUriResolver<TEntity> : ODataUriResolverDecorator
 
             if (propertyClrType != null && propertyClrType.GetInterfaces().Contains(typeof(ISmartEnum)))
             {
-                return new SpecialSmartEnumEdmProperty(property/*, propertyClrType*/);
+                return new SpecialSmartEnumEdmProperty(property);
             }
         }
 
         return property;
     }
-
-    //public override void PromoteBinaryOperandTypes(BinaryOperatorKind binaryOperatorKind, ref SingleValueNode leftNode, ref SingleValueNode rightNode, out IEdmTypeReference typeReference)
-    //{
-    //    TryFixNodes(ref leftNode, ref rightNode);
-    //    TryFixNodes(ref rightNode, ref leftNode);
-
-    //    base.PromoteBinaryOperandTypes(binaryOperatorKind, ref leftNode, ref rightNode, out typeReference);
-    //}
-
-    //private bool TryFixNodes(ref SingleValueNode leftNode, ref SingleValueNode rightNode)
-    //{
-    //    if (leftNode is not SingleValuePropertyAccessNode propertyNode)
-    //    {
-    //        return false;
-    //    }
-
-    //    if (propertyNode.Property is not SpecialSmartEnumEdmProperty smartEnumProperty)
-    //    {
-    //        return false;
-    //    }
-
-    //    if (rightNode is not ConstantNode constantNode)
-    //    {
-    //        return false;
-    //    }
-
-    //    if (constantNode.Value is null)
-    //    {
-    //        return false;
-    //    }
-
-    //    if (constantNode.Value is string smartEnumMemberName)
-    //    {
-    //        var fromNameMethod = smartEnumProperty.ClrType.GetMethod("FromName", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, new[] { typeof(string), typeof(bool) })!;
-    //        var smartEnumMember = fromNameMethod.Invoke(null, new object[] { smartEnumMemberName, EnableCaseInsensitive });
-    //        rightNode = new ConstantNode(smartEnumMember);
-    //        leftNode = new SingleValuePropertyAccessNode(propertyNode.Source, smartEnumProperty.BaseProperty);
-    //    }
-
-    //    return true;
-    //}
 }
