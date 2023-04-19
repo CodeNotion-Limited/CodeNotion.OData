@@ -49,7 +49,7 @@ public class SmartEnumTests
 
         // variables to keep SQL strict & readable
         var TestEntities = nameof(TestDbContext.TestEntities);
-        var t = TestEntities.ToLower().First();
+        var t = nameof(TestDbContext.TestEntities).ToLower().First();
         var Id = nameof(TestEntity.Id);
         var SmartEnum = nameof(TestEntity.SmartEnum);
 
@@ -74,7 +74,7 @@ ORDER BY [{t}].[{SmartEnum}]";
 
         // variables to keep SQL strict & readable
         var TestEntities = nameof(TestDbContext.TestEntities);
-        var t = TestEntities.ToLower().First();
+        var t = nameof(TestDbContext.TestEntities).ToLower().First();
         var Id = nameof(TestEntity.Id);
         var SmartEnum = nameof(TestEntity.SmartEnum);
 
