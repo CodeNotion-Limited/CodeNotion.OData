@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeNotion.Odata", "CodeNotion.Odata\CodeNotion.Odata.csproj", "{C02137FC-E867-471F-B832-2FFF55E15F9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeNotion.Odata.Tests", "CodeNotion.Odata.Tests\CodeNotion.Odata.Tests.csproj", "{0C230F19-66A9-485F-BA9D-05E70DD9964D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C02137FC-E867-471F-B832-2FFF55E15F9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C02137FC-E867-471F-B832-2FFF55E15F9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C02137FC-E867-471F-B832-2FFF55E15F9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C02137FC-E867-471F-B832-2FFF55E15F9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C230F19-66A9-485F-BA9D-05E70DD9964D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C230F19-66A9-485F-BA9D-05E70DD9964D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C230F19-66A9-485F-BA9D-05E70DD9964D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C230F19-66A9-485F-BA9D-05E70DD9964D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E9EF41AF-6CF4-45DA-B783-3447B8506F08}
+	EndGlobalSection
+EndGlobal
