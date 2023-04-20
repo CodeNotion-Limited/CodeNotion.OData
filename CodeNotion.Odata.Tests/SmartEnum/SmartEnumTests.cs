@@ -17,26 +17,26 @@ public class SmartEnumTests
         var services = new ServiceCollection()
             .AddApplicationOData()
             .AddHttpContextAccessor()
-            .AddDbContext<TestDbContext>();
+            .AddDbContext<SmartEnumTestDbContext>();
 
         _serviceProvider = services.BuildServiceProvider().CreateScope().ServiceProvider;
     }
 
-    private ODataQueryOptions<TestEntity> CreateODataQueryOptions(string odataQueryString)
+    private ODataQueryOptions<SmartEnumTestEntity> CreateODataQueryOptions(string odataQueryString)
     {
         var modelBuilder = new ODataConventionModelBuilder();
-        modelBuilder.EntitySet<TestEntity>(nameof(TestDbContext.TestEntities));
+        modelBuilder.EntitySet<SmartEnumTestEntity>(nameof(SmartEnumTestDbContext.TestEntities));
 
         var edmModel = modelBuilder.GetEdmModel();
         var httpRequest = new DefaultHttpContext().Request;
         httpRequest.QueryString = new QueryString("?" + odataQueryString);
         httpRequest.HttpContext.RequestServices = _serviceProvider;
 
-        var entityType = edmModel.SchemaElements.OfType<IEdmEntityType>().FirstOrDefault(e => e.Name == nameof(TestDbContext.TestEntities));
-        var entitySet = edmModel.EntityContainer.FindEntitySet(nameof(TestDbContext.TestEntities));
-        var odataQueryContext = new ODataQueryContext(edmModel, typeof(TestEntity), new ODataPath(new EntitySetSegment(entitySet)));
+        var entityType = edmModel.SchemaElements.OfType<IEdmEntityType>().FirstOrDefault(e => e.Name == nameof(SmartEnumTestDbContext.TestEntities));
+        var entitySet = edmModel.EntityContainer.FindEntitySet(nameof(SmartEnumTestDbContext.TestEntities));
+        var odataQueryContext = new ODataQueryContext(edmModel, typeof(SmartEnumTestEntity), new ODataPath(new EntitySetSegment(entitySet)));
 
-        return new ODataQueryOptions<TestEntity>(odataQueryContext, httpRequest);
+        return new ODataQueryOptions<SmartEnumTestEntity>(odataQueryContext, httpRequest);
     }
 
     [Fact]
@@ -44,14 +44,14 @@ public class SmartEnumTests
     {
         // Arrange
         var odataService = _serviceProvider.GetRequiredService<ODataService>();
-        var context = _serviceProvider.GetRequiredService<TestDbContext>();
-        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(TestEntity.SmartEnum)}");
+        var context = _serviceProvider.GetRequiredService<SmartEnumTestDbContext>();
+        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.SmartEnum)}");
 
         // variables to keep SQL strict & readable
-        var TestEntities = nameof(TestDbContext.TestEntities);
-        var t = nameof(TestDbContext.TestEntities).ToLower().First();
-        var Id = nameof(TestEntity.Id);
-        var SmartEnum = nameof(TestEntity.SmartEnum);
+        var TestEntities = nameof(SmartEnumTestDbContext.TestEntities);
+        var t = nameof(SmartEnumTestDbContext.TestEntities).ToLower().First();
+        var Id = nameof(SmartEnumTestEntity.Id);
+        var SmartEnum = nameof(SmartEnumTestEntity.SmartEnum);
 
         var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{SmartEnum}]
 FROM [{TestEntities}] AS [{t}]
@@ -69,14 +69,14 @@ ORDER BY [{t}].[{SmartEnum}]";
     {
         // Arrange
         var odataService = _serviceProvider.GetRequiredService<ODataService>();
-        var context = _serviceProvider.GetRequiredService<TestDbContext>();
-        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(TestEntity.SmartEnum)} desc");
+        var context = _serviceProvider.GetRequiredService<SmartEnumTestDbContext>();
+        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.SmartEnum)} desc");
 
         // variables to keep SQL strict & readable
-        var TestEntities = nameof(TestDbContext.TestEntities);
-        var t = nameof(TestDbContext.TestEntities).ToLower().First();
-        var Id = nameof(TestEntity.Id);
-        var SmartEnum = nameof(TestEntity.SmartEnum);
+        var TestEntities = nameof(SmartEnumTestDbContext.TestEntities);
+        var t = nameof(SmartEnumTestDbContext.TestEntities).ToLower().First();
+        var Id = nameof(SmartEnumTestEntity.Id);
+        var SmartEnum = nameof(SmartEnumTestEntity.SmartEnum);
 
         var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{SmartEnum}]
 FROM [{TestEntities}] AS [{t}]
