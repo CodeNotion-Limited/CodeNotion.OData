@@ -61,7 +61,7 @@ ORDER BY [{t}].[{SmartEnumProperty}]";
         var actualSql = odataService.ApplyOdata(context.TestEntities, odataOptions).ToQueryString();
 
         // Assert
-        Assert.Equal(expectedSql, actualSql);
+        Assert.Equal(expectedSql, actualSql, ignoreLineEndingDifferences: true);
     }
 
     [Fact]
@@ -86,6 +86,6 @@ ORDER BY [{t}].[{SmartEnumProperty}] DESC";
         var actualSql = odataService.ApplyOdata(context.TestEntities, odataOptions).ToQueryString();
 
         // Assert
-        Assert.Equal(expectedSql, actualSql);
+        Assert.Equal(expectedSql, actualSql, ignoreLineEndingDifferences: true);
     }
 }
