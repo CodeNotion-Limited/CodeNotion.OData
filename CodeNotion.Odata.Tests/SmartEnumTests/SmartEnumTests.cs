@@ -45,17 +45,17 @@ public class SmartEnumTests
         // Arrange
         var odataService = _serviceProvider.GetRequiredService<ODataService>();
         var context = _serviceProvider.GetRequiredService<SmartEnumTestDbContext>();
-        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.SmartEnum)}");
+        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.SmartEnumProperty)}");
 
         // variables to keep SQL strict & readable
         var TestEntities = nameof(SmartEnumTestDbContext.TestEntities);
         var t = nameof(SmartEnumTestDbContext.TestEntities).ToLower().First();
         var Id = nameof(SmartEnumTestEntity.Id);
-        var SmartEnum = nameof(SmartEnumTestEntity.SmartEnum);
+        var SmartEnumProperty = nameof(SmartEnumTestEntity.SmartEnumProperty);
 
-        var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{SmartEnum}]
+        var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{SmartEnumProperty}]
 FROM [{TestEntities}] AS [{t}]
-ORDER BY [{t}].[{SmartEnum}]";
+ORDER BY [{t}].[{SmartEnumProperty}]";
 
         // Act
         var actualSql = odataService.ApplyOdata(context.TestEntities, odataOptions).ToQueryString();
@@ -70,17 +70,17 @@ ORDER BY [{t}].[{SmartEnum}]";
         // Arrange
         var odataService = _serviceProvider.GetRequiredService<ODataService>();
         var context = _serviceProvider.GetRequiredService<SmartEnumTestDbContext>();
-        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.SmartEnum)} desc");
+        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.SmartEnumProperty)} desc");
 
         // variables to keep SQL strict & readable
         var TestEntities = nameof(SmartEnumTestDbContext.TestEntities);
         var t = nameof(SmartEnumTestDbContext.TestEntities).ToLower().First();
         var Id = nameof(SmartEnumTestEntity.Id);
-        var SmartEnum = nameof(SmartEnumTestEntity.SmartEnum);
+        var SmartEnumProperty = nameof(SmartEnumTestEntity.SmartEnumProperty);
 
-        var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{SmartEnum}]
+        var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{SmartEnumProperty}]
 FROM [{TestEntities}] AS [{t}]
-ORDER BY [{t}].[{SmartEnum}] DESC";
+ORDER BY [{t}].[{SmartEnumProperty}] DESC";
 
         // Act
         var actualSql = odataService.ApplyOdata(context.TestEntities, odataOptions).ToQueryString();
