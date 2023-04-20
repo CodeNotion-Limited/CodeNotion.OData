@@ -152,4 +152,68 @@ WHERE [{s}].[{DateOnlyProperty}] = '2023-02-01T00:00:00.0000000'";
         // Assert
         Assert.Equal(expectedSql, actualSql, ignoreLineEndingDifferences: true);
     }
+
+    [Fact]
+    public void Should_GenerateCorrectSql_When_FilterBySubEntityNullableDateOnlyPropertyEqualsNull()
+    {
+        // Arrange
+        var odataService = _serviceProvider.GetRequiredService<ODataService>();
+        var context = _serviceProvider.GetRequiredService<DateOnlyTestDbContext>();
+        var odataOptions = CreateODataQueryOptions($"$filter={nameof(DateOnlyTestEntity.SubEntity)}/{nameof(DateOnlyTestEntity.SubEntity.NullableDateOnlyProperty)} eq null");
+
+        // variables to keep SQL strict & readable
+        var Entities = nameof(DateOnlyTestDbContext.Entities);
+        var e = nameof(DateOnlyTestDbContext.Entities).ToLower().First();
+        var eId = nameof(DateOnlyTestEntity.Id);
+        var SubEntityId = nameof(DateOnlyTestEntity.SubEntityId);
+        var SubEntities = nameof(DateOnlyTestDbContext.SubEntities);
+        var s = nameof(DateOnlyTestDbContext.SubEntities).ToLower().First();
+        var sId = nameof(DateOnlyTestSubEntity.Id);
+        var NullableDateOnlyProperty = nameof(DateOnlyTestEntity.NullableDateOnlyProperty);
+
+        var expectedSql = @$"SELECT [{e}].[{eId}], [{s}].[{NullableDateOnlyProperty}]
+FROM [{Entities}] AS [{e}]
+INNER JOIN [{SubEntities}] AS [{s}] ON [{e}].[{SubEntityId}] = [{s}].[{sId}]
+WHERE [{s}].[{NullableDateOnlyProperty}] IS NULL";
+
+        // Act
+        var actualSql = odataService.ApplyOdata(context.Entities, odataOptions)
+            .Select(x => new { x.Id, x.SubEntity.NullableDateOnlyProperty }) // explicitly specifying properties
+            .ToQueryString();
+
+        // Assert
+        Assert.Equal(expectedSql, actualSql, ignoreLineEndingDifferences: true);
+    }
+
+    [Fact]
+    public void Should_GenerateCorrectSql_When_FilterBySubEntityNullableDateOnlyPropertyEqualsSpecificDate()
+    {
+        // Arrange
+        var odataService = _serviceProvider.GetRequiredService<ODataService>();
+        var context = _serviceProvider.GetRequiredService<DateOnlyTestDbContext>();
+        var odataOptions = CreateODataQueryOptions($"$filter={nameof(DateOnlyTestEntity.SubEntity)}/{nameof(DateOnlyTestEntity.SubEntity.NullableDateOnlyProperty)} eq 2023-02-01");
+
+        // variables to keep SQL strict & readable
+        var Entities = nameof(DateOnlyTestDbContext.Entities);
+        var e = nameof(DateOnlyTestDbContext.Entities).ToLower().First();
+        var eId = nameof(DateOnlyTestEntity.Id);
+        var SubEntityId = nameof(DateOnlyTestEntity.SubEntityId);
+        var SubEntities = nameof(DateOnlyTestDbContext.SubEntities);
+        var s = nameof(DateOnlyTestDbContext.SubEntities).ToLower().First();
+        var sId = nameof(DateOnlyTestSubEntity.Id);
+        var NullableDateOnlyProperty = nameof(DateOnlyTestEntity.NullableDateOnlyProperty);
+
+        var expectedSql = @$"SELECT [{e}].[{eId}], [{s}].[{NullableDateOnlyProperty}]
+FROM [{Entities}] AS [{e}]
+INNER JOIN [{SubEntities}] AS [{s}] ON [{e}].[{SubEntityId}] = [{s}].[{sId}]
+WHERE [{s}].[{NullableDateOnlyProperty}] = '2023-02-01T00:00:00.0000000'";
+
+        // Act
+        var actualSql = odataService.ApplyOdata(context.Entities, odataOptions)
+            .Select(x => new { x.Id, x.SubEntity.NullableDateOnlyProperty }) // explicitly specifying properties
+            .ToQueryString();
+
+        // Assert
+        Assert.Equal(expectedSql, actualSql, ignoreLineEndingDifferences: true);
+    }
 }
