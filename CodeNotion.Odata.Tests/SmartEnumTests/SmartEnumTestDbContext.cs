@@ -4,7 +4,7 @@ namespace CodeNotion.Odata.Tests.SmartEnum;
 
 public class SmartEnumTestDbContext : DbContext
 {
-    public DbSet<SmartEnumTestEntity> TestEntities => Set<SmartEnumTestEntity>();
+    public DbSet<SmartEnumTestEntity> Entities => Set<SmartEnumTestEntity>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

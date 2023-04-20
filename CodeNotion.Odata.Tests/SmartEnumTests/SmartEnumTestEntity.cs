@@ -2,7 +2,7 @@
 
 namespace CodeNotion.Odata.Tests.SmartEnum;
 
-[Table(nameof(SmartEnumTestDbContext.TestEntities))]
+[Table(nameof(SmartEnumTestDbContext.Entities))]
 public class SmartEnumTestEntity
 {
     public int Id { get; set; }
