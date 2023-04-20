@@ -6,5 +6,5 @@ namespace CodeNotion.Odata.Tests.SmartEnum;
 public class SmartEnumTestEntity
 {
     public int Id { get; set; }
-    public TestSmartEnum? SmartEnumProperty { get; set; }
+    public TestSmartEnum? NullableSmartEnumProperty { get; set; }
 }

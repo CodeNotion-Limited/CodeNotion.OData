@@ -45,20 +45,22 @@ public class SmartEnumTests
         // Arrange
         var odataService = _serviceProvider.GetRequiredService<ODataService>();
         var context = _serviceProvider.GetRequiredService<SmartEnumTestDbContext>();
-        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.SmartEnumProperty)}");
+        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.NullableSmartEnumProperty)}");
 
         // variables to keep SQL strict & readable
         var TestEntities = nameof(SmartEnumTestDbContext.TestEntities);
         var t = nameof(SmartEnumTestDbContext.TestEntities).ToLower().First();
         var Id = nameof(SmartEnumTestEntity.Id);
-        var SmartEnumProperty = nameof(SmartEnumTestEntity.SmartEnumProperty);
+        var NullableSmartEnumProperty = nameof(SmartEnumTestEntity.NullableSmartEnumProperty);
 
-        var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{SmartEnumProperty}]
+        var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{NullableSmartEnumProperty}]
 FROM [{TestEntities}] AS [{t}]
-ORDER BY [{t}].[{SmartEnumProperty}]";
+ORDER BY [{t}].[{NullableSmartEnumProperty}]";
 
         // Act
-        var actualSql = odataService.ApplyOdata(context.TestEntities, odataOptions).ToQueryString();
+        var actualSql = odataService.ApplyOdata(context.TestEntities, odataOptions)
+            .Select(x => new { x.Id, x.NullableSmartEnumProperty }) // explicitly specifying properties
+            .ToQueryString();
 
         // Assert
         Assert.Equal(expectedSql, actualSql, ignoreLineEndingDifferences: true);
@@ -70,20 +72,22 @@ ORDER BY [{t}].[{SmartEnumProperty}]";
         // Arrange
         var odataService = _serviceProvider.GetRequiredService<ODataService>();
         var context = _serviceProvider.GetRequiredService<SmartEnumTestDbContext>();
-        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.SmartEnumProperty)} desc");
+        var odataOptions = CreateODataQueryOptions($"$orderby={nameof(SmartEnumTestEntity.NullableSmartEnumProperty)} desc");
 
         // variables to keep SQL strict & readable
         var TestEntities = nameof(SmartEnumTestDbContext.TestEntities);
         var t = nameof(SmartEnumTestDbContext.TestEntities).ToLower().First();
         var Id = nameof(SmartEnumTestEntity.Id);
-        var SmartEnumProperty = nameof(SmartEnumTestEntity.SmartEnumProperty);
+        var NullableSmartEnumProperty = nameof(SmartEnumTestEntity.NullableSmartEnumProperty);
 
-        var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{SmartEnumProperty}]
+        var expectedSql = @$"SELECT [{t}].[{Id}], [{t}].[{NullableSmartEnumProperty}]
 FROM [{TestEntities}] AS [{t}]
-ORDER BY [{t}].[{SmartEnumProperty}] DESC";
+ORDER BY [{t}].[{NullableSmartEnumProperty}] DESC";
 
         // Act
-        var actualSql = odataService.ApplyOdata(context.TestEntities, odataOptions).ToQueryString();
+        var actualSql = odataService.ApplyOdata(context.TestEntities, odataOptions)
+            .Select(x => new { x.Id, x.NullableSmartEnumProperty }) // explicitly specifying properties
+            .ToQueryString();
 
         // Assert
         Assert.Equal(expectedSql, actualSql, ignoreLineEndingDifferences: true);
