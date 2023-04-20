@@ -2,9 +2,9 @@
 
 namespace CodeNotion.Odata.Tests.SmartEnum;
 
-public class TestDbContext : DbContext
+public class SmartEnumTestDbContext : DbContext
 {
-    public DbSet<TestEntity> TestEntities => Set<TestEntity>();
+    public DbSet<SmartEnumTestEntity> Entities => Set<SmartEnumTestEntity>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -13,7 +13,7 @@ public class TestDbContext : DbContext
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        configurationBuilder.Properties<TestIntSmartEnum>()
-            .HaveConversion<SmartEnumConverter<TestIntSmartEnum, int>>();
+        configurationBuilder.Properties<TestSmartEnum>()
+            .HaveConversion<SmartEnumConverter<TestSmartEnum, int>>();
     }
 }
