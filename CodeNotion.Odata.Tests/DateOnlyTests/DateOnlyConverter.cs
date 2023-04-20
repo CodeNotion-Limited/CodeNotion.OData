@@ -1,0 +1,12 @@
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+namespace CodeNotion.Odata.Tests.DateOnlyTests;
+
+public class DateOnlyConverter : ValueConverter<DateOnly, DateTime>
+{
+    public DateOnlyConverter() : base(
+        dateOnly => dateOnly.ToDateTime(TimeOnly.MinValue),
+        dateTime => DateOnly.FromDateTime(dateTime))
+    {
+    }
+}
