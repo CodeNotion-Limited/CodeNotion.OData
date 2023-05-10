@@ -26,7 +26,7 @@ internal class FixedFilterBinder : FilterBinder
 
     public override Expression BindSingleValueNode(SingleValueNode node, QueryBinderContext context)
     {
-        if (node is SpecialEdmDateNode edmDateNode)
+        if (node is ConvertNode convertNode && convertNode.Source is SpecialEdmDateNode edmDateNode)
         {
             return Expression.Constant(edmDateNode.EdmDate.ToDateOnly());
         }

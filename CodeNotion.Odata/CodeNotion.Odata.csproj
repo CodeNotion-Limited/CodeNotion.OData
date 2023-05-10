@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <VersionPrefix>1.5.1</VersionPrefix>
+    <VersionPrefix>1.7.0</VersionPrefix>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <Title>CodeNotion.OData</Title>
@@ -12,6 +12,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Ardalis.SmartEnum" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
