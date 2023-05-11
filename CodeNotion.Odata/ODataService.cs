@@ -96,7 +96,7 @@ public class ODataService
             throw new InvalidOperationException("Could not get ODataQueryOptionParser from ODataQueryOptions");
         }
 
-        parser.Resolver = new SmartEnumODataUriResolver<TEntity>(new IntAsEnumODataUriResolver(new ODataUriResolver()))
+        parser.Resolver = new SmartEnumODataUriResolver<TEntity>(new StringAsDateTimeOffsetODataUriResolver(new IntAsEnumODataUriResolver(new ODataUriResolver())))
         {
             EnableCaseInsensitive = true
         };
