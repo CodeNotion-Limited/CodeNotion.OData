@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <VersionPrefix>1.7.0</VersionPrefix>
+    <VersionPrefix>1.7.1</VersionPrefix>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <Title>CodeNotion.OData</Title>
