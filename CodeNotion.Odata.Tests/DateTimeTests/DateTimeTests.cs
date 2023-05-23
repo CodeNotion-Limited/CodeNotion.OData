@@ -1,4 +1,3 @@
-using CodeNotion.Odata.Tests.DateTimeTests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
