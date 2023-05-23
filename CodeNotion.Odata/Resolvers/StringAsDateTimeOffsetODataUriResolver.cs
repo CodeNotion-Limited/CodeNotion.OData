@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.OData.Edm;
-using Microsoft.OData.Edm.Vocabularies;
 using Microsoft.OData.UriParser;
 
 namespace CodeNotion.Odata.Resolvers;
@@ -12,9 +10,9 @@ public class StringAsDateTimeOffsetODataUriResolver : ODataUriResolverDecorator
 
     public override void PromoteBinaryOperandTypes(BinaryOperatorKind binaryOperatorKind, ref SingleValueNode leftNode, ref SingleValueNode rightNode, out IEdmTypeReference typeReference)
     {
-        var @fixed = TryFixDateTimeOffsetNode(leftNode, ref rightNode);
+        var isFixed = TryFixDateTimeOffsetNode(leftNode, ref rightNode);
 
-        if (!@fixed)
+        if (!isFixed)
         {
             TryFixDateTimeOffsetNode(rightNode, ref leftNode);
         }
