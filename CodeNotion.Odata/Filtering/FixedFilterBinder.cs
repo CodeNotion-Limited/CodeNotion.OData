@@ -41,7 +41,7 @@ internal class FixedFilterBinder : FilterBinder
 
     private bool TryFixDateOnlyComparingWithEdmDate(BinaryOperatorKind operatorKind, SingleValueNode left, SingleValueNode right, QueryBinderContext context, out BinaryOperatorNode fixedBinary)
     {
-        if (left is SingleValuePropertyAccessNode leftPropertyNode &&
+        if (left is SingleValuePropertyAccessNode { Source: not SingleNavigationNode } leftPropertyNode &&
             context.ElementClrType.GetProperty(leftPropertyNode.Property.Name)!.PropertyType == typeof(DateOnly) &&
             right is ConstantNode rightConstantNode && rightConstantNode.Value is Date)
         {
@@ -60,7 +60,7 @@ internal class FixedFilterBinder : FilterBinder
 
     private bool TryFixNullableDateOnlyComparingWithNullableEdmDate(BinaryOperatorKind operatorKind, SingleValueNode left, SingleValueNode right, QueryBinderContext context, out BinaryOperatorNode fixedBinary)
     {
-        if (left is SingleValuePropertyAccessNode leftPropertyNode &&
+        if (left is SingleValuePropertyAccessNode { Source: not SingleNavigationNode } leftPropertyNode &&
             context.ElementClrType.GetProperty(leftPropertyNode.Property.Name)!.PropertyType == typeof(DateOnly?) &&
             right is ConvertNode rightConvertNode && right.TypeReference.Definition.FullTypeName() == "Edm.Date" &&
             rightConvertNode.Source is ConstantNode rightConstantNode && rightConstantNode.Value is Date)
